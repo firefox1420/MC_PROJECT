@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "183984916836",
+    "firebase_url": "https://famousfiveiiitd-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "famousfiveiiitd",
+    "storage_bucket": "famousfiveiiitd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183984916836:android:02ba4e7376e7d1e84d9271",
+        "android_client_info": {
+          "package_name": "com.example.mc_project_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "183984916836-6tdb1rf7hrg4dsctu6c850sh8fl9hlu0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh6PZeIx_gTOjQ12_2wKz5L54xN3daafU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "183984916836-60pun6v4bq8mlaut1g489s3ab31kv26m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
