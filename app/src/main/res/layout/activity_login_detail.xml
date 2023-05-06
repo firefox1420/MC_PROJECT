@@ -19,14 +19,14 @@
         android:scaleType="centerCrop"
         tools:layout_editor_absoluteY="-199dp" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="317dp"
-        android:layout_height="56dp"
-        android:layout_margin="30dp"
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/app_logo"
         android:foregroundGravity="center"
-        app:cardCornerRadius="30dp"
-        app:cardElevation="20dp"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,14 +34,15 @@
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="275dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dp"
 
-
-
-    </androidx.cardview.widget.CardView>
-
-
+            android:layout_marginTop="-100dp"
+            android:layout_marginRight="15dp"
+            android:foregroundGravity="center" />
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

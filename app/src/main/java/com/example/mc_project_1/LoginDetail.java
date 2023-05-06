@@ -1,6 +1,7 @@
 package com.example.mc_project_1;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -51,6 +52,8 @@ public class LoginDetail extends AppCompatActivity {
     String address;
     double latitude;
     double longitude;
+    private CustomLocationHandler locationHandler;
+
 
 
     @Override
@@ -64,6 +67,8 @@ public class LoginDetail extends AppCompatActivity {
          latitude=intent.getDoubleExtra("Lat",0.0);
        longitude =intent.getDoubleExtra("Longi",0.0);
 
+        CustomLocationHandler locationHandler = new CustomLocationHandler(this);
+
 
         mAuth=FirebaseAuth.getInstance();
         mUser=mAuth.getCurrentUser();
@@ -75,10 +80,8 @@ public class LoginDetail extends AppCompatActivity {
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent i=mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(i,1000);
-
             }
         });
     }
@@ -101,14 +104,17 @@ public class LoginDetail extends AppCompatActivity {
                 navigateToSecondActivity();
                 storeindatabase(emailid,username);
             } catch (ApiException e) {
-                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Try Again", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
+
+
     void navigateToSecondActivity(){
         finish();
-        signOut();
+        Intent intent = new Intent(LoginDetail.this, HomeActivity.class);
+        startActivity(intent);
+//        signOut();
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
@@ -138,25 +144,27 @@ public class LoginDetail extends AppCompatActivity {
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Intent intent = new Intent(LoginDetail.this,HomeActivity.class);
+                        Intent intent = new Intent(LoginDetail.this, HomeActivity.class);
                         startActivity(intent);
                     }
                 });
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if (currentUser!=null){
-//            Intent intent = new Intent(LoginDetail.this,HomeActivity.class);
-//            SharedPreferences sharedPref = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-//            String username = sharedPref.getString("username", null);
-//            intent.putExtra("username", username);
-//            startActivity(intent);
-//        }
-//    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if (currentUser!=null && account!=null ){
+            Intent intent = new Intent(LoginDetail.this,HomeActivity.class);
+            SharedPreferences sharedPref = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+            String username = sharedPref.getString("username", null);
+            intent.putExtra("username", username);
+            startActivity(intent);
+            finish();
+        }
+    }
 
     void storeindatabase(String emailid, String username)
     {
@@ -177,5 +185,12 @@ public class LoginDetail extends AppCompatActivity {
             }
         });
     }
+
+//    @Override
+//    public void onBackPressed() {
+//        // Perform your desired action here, such as going back to the previous activity
+//        super.onBackPressed();
+//        finishAffinity(); // Close the entire application
+//    }
 }
 

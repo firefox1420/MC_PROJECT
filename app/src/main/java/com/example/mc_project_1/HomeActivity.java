@@ -121,5 +121,11 @@ public class HomeActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right,R.anim.exit_to_right,R.anim.enter_from_right,R.anim.exit_to_right).replace(R.id.mainMenuContainer,new HomeScreen()).commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        // Perform your desired action here, such as going back to the previous activity
+        super.onBackPressed();
+        finish(); // Close the entire application
+    }
 
 }
