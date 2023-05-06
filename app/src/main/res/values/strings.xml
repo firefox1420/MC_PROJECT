@@ -21,4 +21,6 @@
     <string name="enter_your_email">Enter your email</string>
     <string name="email">Email</string>
     <string name="enter_your_mobile">Enter your mobile</string>
+    <string name="food_donate">Food Donate</string>
+    <string name="username">Username</string>
 </resources>

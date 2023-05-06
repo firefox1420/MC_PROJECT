@@ -1,13 +1,18 @@
 package com.example.mc_project_1;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,11 +22,14 @@ import android.view.ViewGroup;
 public class HomeScreen extends Fragment {
 
     CardView foodonate,foodmanage,complaint,knowmore;
+    static String value;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -67,6 +75,7 @@ public class HomeScreen extends Fragment {
         foodmanage = view.findViewById(R.id.HomeScreenCardView2);
         complaint = view.findViewById(R.id.HomeScreenCardView3);
         knowmore = view.findViewById(R.id.HomeScreenCardView4);
+
 
         foodonate.setOnClickListener(new View.OnClickListener() {
             @Override

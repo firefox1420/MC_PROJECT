@@ -99,7 +99,7 @@ public class LoginDetail extends AppCompatActivity {
                 String emailid=account.getEmail();
                 SharedPreferences sharedPref = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("username", username);
+                editor.putString("emailid", emailid);
                 editor.apply();
                 navigateToSecondActivity();
                 storeindatabase(emailid,username);
@@ -159,8 +159,8 @@ public class LoginDetail extends AppCompatActivity {
         if (currentUser!=null && account!=null ){
             Intent intent = new Intent(LoginDetail.this,HomeActivity.class);
             SharedPreferences sharedPref = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-            String username = sharedPref.getString("username", null);
-            intent.putExtra("username", username);
+            String emailid = sharedPref.getString("emailid", null);
+            intent.putExtra("emailid", emailid);
             startActivity(intent);
             finish();
         }

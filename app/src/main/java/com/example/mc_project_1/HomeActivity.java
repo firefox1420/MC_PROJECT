@@ -27,10 +27,15 @@ public class HomeActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private CustomLocationHandler locationHandler;
 
+    String emailid="";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        emailid = getIntent().getStringExtra("emailid");
+        Log.d("Detials in home activity", "emailid"+emailid);
         sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
         locationHandler = new CustomLocationHandler(this);
         Boolean tempb = getIntent().getBooleanExtra("callFromNotification", false);
@@ -120,12 +125,4 @@ public class HomeActivity extends AppCompatActivity {
     private void generatenotificationListFragment(){
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right,R.anim.exit_to_right,R.anim.enter_from_right,R.anim.exit_to_right).replace(R.id.mainMenuContainer,new HomeScreen()).commit();
     }
-
-    @Override
-    public void onBackPressed() {
-        // Perform your desired action here, such as going back to the previous activity
-        super.onBackPressed();
-        finish(); // Close the entire application
-    }
-
 }
