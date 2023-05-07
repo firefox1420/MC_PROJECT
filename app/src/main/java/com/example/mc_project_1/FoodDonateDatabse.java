@@ -1,9 +1,9 @@
 package com.example.mc_project_1;
 
 public class FoodDonateDatabse {
-    String username, email, phoneNo, serves, time, type, best_bef, typeVeg;
+    String username, email, phoneNo, serves, time, type, best_bef, typeVeg,food_donate_image;
 
-    public FoodDonateDatabse(String username, String email, String phoneNo, String serves, String time, String type, String best_bef, String typeVeg) {
+    public FoodDonateDatabse(String username, String email, String phoneNo, String serves, String time, String type, String best_bef, String typeVeg,String food_donate_image) {
         this.username = username;
         this.email = email;
         this.phoneNo = phoneNo;
@@ -12,6 +12,15 @@ public class FoodDonateDatabse {
         this.type = type;
         this.best_bef = best_bef;
         this.typeVeg = typeVeg;
+        this.food_donate_image=food_donate_image;
+    }
+
+    public String getFood_donate_image() {
+        return food_donate_image;
+    }
+
+    public void setFood_donate_image(String food_donate_image) {
+        this.food_donate_image = food_donate_image;
     }
 
     public FoodDonateDatabse() {

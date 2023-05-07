@@ -1,5 +1,7 @@
 package com.example.mc_project_1;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +35,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class LoginDetail extends AppCompatActivity {
 
@@ -53,6 +56,7 @@ public class LoginDetail extends AppCompatActivity {
     double latitude;
     double longitude;
     private CustomLocationHandler locationHandler;
+
 
 
 
@@ -169,21 +173,49 @@ public class LoginDetail extends AppCompatActivity {
     void storeindatabase(String emailid, String username)
     {
         String email = emailid.substring(0, emailid.indexOf("@"));
-        FoodDonateDatabse foodDonateDatabse= new FoodDonateDatabse(username, email, "", "", "", "", "", "");
-        FoodManageDatabase foodManageDatabase=new FoodManageDatabase(username, email, "", "", "", "", "", "", "");
+        FoodDonateDatabse foodDonateDatabse= new FoodDonateDatabse(username, email, "", "", "", "", "", "","");
+        FoodManageDatabase foodManageDatabase=new FoodManageDatabase(username, email, "", "", "", "", "", "", "","");
         ComplaintDatabase complaintDatabase=new ComplaintDatabase( username, email, "", "");
-        String devicetoken = "";
-        AnnaDatabase annaDatabase=new AnnaDatabase(devicetoken,emailid,username,"",address,pincode,latitude,longitude,foodManageDatabase,foodDonateDatabse,complaintDatabase,false);
+        final String[] devicetoken = {""};
 
-        db=FirebaseDatabase.getInstance();
-        reference=db.getReference("User");
 
-        reference.child(email).setValue(annaDatabase).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(LoginDetail.this, "Success In Database", Toast.LENGTH_SHORT).show();
-            }
-        });
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            Toast.makeText(LoginDetail.this, "Error in FCM", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        devicetoken[0] = task.getResult();
+                        Toast.makeText(LoginDetail.this, ""+String.valueOf(devicetoken[0]), Toast.LENGTH_SHORT).show();
+                        AnnaDatabase annaDatabase=new AnnaDatabase(String.valueOf(devicetoken[0]),emailid,username,"",address,pincode,latitude,longitude,foodManageDatabase,foodDonateDatabse,complaintDatabase,false);
+
+                        db=FirebaseDatabase.getInstance();
+                        reference=db.getReference("User");
+
+                        reference.child(email).setValue(annaDatabase).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(LoginDetail.this, "Success In Database", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+//                        reference.child("devicetoken").setValue(devicetoken);
+
+                    }
+                });
+        Toast.makeText(this, "device token : "+devicetoken[0], Toast.LENGTH_SHORT).show();
+
+
+
+
+
+
+
     }
 
 //    @Override

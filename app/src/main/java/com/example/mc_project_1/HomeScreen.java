@@ -21,7 +21,7 @@ import com.google.android.material.textfield.TextInputEditText;
  */
 public class HomeScreen extends Fragment {
 
-    CardView foodonate,foodmanage,complaint,knowmore;
+    CardView foodonate,foodmanage,complaint,knowmore,statistic;
     static String value;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -75,6 +75,7 @@ public class HomeScreen extends Fragment {
         foodmanage = view.findViewById(R.id.HomeScreenCardView2);
         complaint = view.findViewById(R.id.HomeScreenCardView3);
         knowmore = view.findViewById(R.id.HomeScreenCardView4);
+        statistic=view.findViewById(R.id.HomeScreenCardView5);
 
 
         foodonate.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +104,28 @@ public class HomeScreen extends Fragment {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.mainMenuContainer,new knowmore())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        complaint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mainMenuContainer,new complaintbox())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        statistic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mainMenuContainer,new statis())
                         .addToBackStack(null)
                         .commit();
             }

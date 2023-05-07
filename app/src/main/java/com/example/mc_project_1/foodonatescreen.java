@@ -1,11 +1,14 @@
 package com.example.mc_project_1;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -25,6 +28,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -33,9 +45,26 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 
 public class foodonatescreen extends Fragment {
+
+    public static  final String SERVER_KEY = "AAAAKtZbCWQ:APA91bFX9a_3YBdQ9oUj1GcKdKYF2soRD0j47LQrZXsmbKoHrPrP5dTbDWDX4B3TYchXSOzdOMwZC1v-3XFObhfES1_-_B5D4FPgOm0FxsphDSUPAKQjwYLO-kEjhCU7LUv3To0cMjNX";
+    private static final String FCM_API_URL = "https://fcm.googleapis.com/fcm/send";
 
     TextInputLayout regName, regUsername, regEmail, regPhoneNo, regPassword;
     Button regBtn, regToLoginBtn;
@@ -54,11 +83,17 @@ public class foodonatescreen extends Fragment {
     private TextView mainHeading3;
     private ImageView dropdownArrow3;
     private LinearLayout dropdownOptions3;
+    String food_donate_image_url = null;
+
+    StorageReference storageReference;
+    ProgressDialog progressDialog;
+
     private LinearLayout option4;
     private EditText locationInput;
     private Button addLocationButton;
 
     TextInputEditText t1,t2;
+    String  Devicetoken = null;
 
     EditText t3;
 
@@ -74,7 +109,7 @@ public class foodonatescreen extends Fragment {
         regEmail = view.findViewById(R.id.reg_email);
         regPhoneNo = view.findViewById(R.id.reg_phoneNo);
         regBtn = view.findViewById(R.id.reg_btn);
-        t1=view.findViewById(R.id.username);
+        t1=view.findViewById(R.id.username1);
         t2=view.findViewById(R.id.email);
         String location;
         SharedPreferences sharedPref = getActivity().getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
@@ -95,6 +130,7 @@ public class foodonatescreen extends Fragment {
                     t1.setText(""+name);
                     String email = userSnapshot.child("emailid").getValue(String.class);
                     String location = userSnapshot.child("address").getValue(String.class);
+                     Devicetoken = userSnapshot.child("devicetoken").getValue(String.class);
                     t3.setText(location);
                     Log.d("Detials", "Name: " + name + ", Email: " + email + ", Location: " + location);
                 }
@@ -492,8 +528,19 @@ public class foodonatescreen extends Fragment {
                 String type = mainHeading4.getText().toString();
                 String best_bef = mainHeading5.getText().toString();
                 String typeVeg = mainHeading6.getText().toString();
-                FoodDonateDatabse helperClass = new FoodDonateDatabse(username, email, phoneNo, serves, time, type, best_bef, typeVeg);
+                FoodDonateDatabse helperClass = new FoodDonateDatabse(username, email, phoneNo, serves, time, type, best_bef, typeVeg,food_donate_image_url);
                 Toast.makeText(getActivity(), ""+String.valueOf(helperClass), Toast.LENGTH_SHORT).show();
+                reference.child("foodDonateDatabse").setValue(helperClass);
+
+
+
+                //when a user request food donate to admin
+                // Send notification message-> "food donate request"
+                String message = "food donate request";
+                String title = "user";
+                sendNotification(Devicetoken, title, message);
+
+
 
 //                Query query = usersRef.orderByChild("emailid").equalTo(targetEmail);
 //                query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -514,7 +561,6 @@ public class foodonatescreen extends Fragment {
 //                        Log.e("TAG", "Error fetching data: " + databaseError.getMessage());
 //                    }
 //                });
-                reference.child("foodDonateDatabse").setValue(helperClass);
             }
         });//Register Button method end
 
@@ -541,7 +587,6 @@ public class foodonatescreen extends Fragment {
             public void onClick(View view) {
                 String location = locationInput.getText().toString().trim();
                 if (!location.isEmpty()) {
-                    // Do something with the entered location
 
                 }
                 locationInput.setText("");
@@ -557,10 +602,59 @@ public class foodonatescreen extends Fragment {
 
         if(resultCode == RESULT_OK){
             if(requestCode == CAMERA_REQ_CODE){
-                Bitmap image = (Bitmap)(data.getExtras().get("data"));
-                img.setImageBitmap(image);
+
+//                Bitmap image = (Bitmap)(data.getExtras().get("data"));
+
+                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                thumbnail.compress(Bitmap.CompressFormat.JPEG,90,bytes);
+                byte bb[] = bytes.toByteArray();
+                uploadImage(bb);
+                //if user has requested then only it should display food donate image
+                //                img.setImageBitmap(image);
+
             }
         }
+    }
+    private void uploadImage(byte[] image_data) {
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("Uploading File....");
+        progressDialog.show();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.CANADA);
+        Date now = new Date();
+        String fileName = formatter.format(now);
+        storageReference = FirebaseStorage.getInstance().getReference("images/"+fileName);
+
+        storageReference.putBytes(image_data)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+
+                        // Get the download URL
+                        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+//                                 Set the image view with the downloaded URL
+                                Glide.with(getContext())
+                                        .load(uri)
+                                        .into(img);
+                                 food_donate_image_url = String.valueOf(uri);
+//                                Log.e("ggggg", String.valueOf(uri));
+                                Toast.makeText(getContext(),"Successfully Uploaded",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        Toast.makeText(getContext(),"Failed to Upload",Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 
@@ -708,6 +802,54 @@ public class foodonatescreen extends Fragment {
     }
 
 
+    private void sendNotification(String token, String title, String message) {
+        RequestQueue queue = Volley.newRequestQueue(getContext());
 
+        // Construct JSON body for POST request
+        JSONObject notificationBody = new JSONObject();
+        try {
+            notificationBody.put("to", token);
+
+            JSONObject data = new JSONObject();
+            data.put("title", title);
+            data.put("message", message);
+
+            notificationBody.put("data", data);
+        } catch (JSONException e) {
+            Log.e(TAG, "Error creating JSON body", e);
+        }
+
+        // Construct POST request
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                FCM_API_URL,
+                notificationBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "Notification sent successfully: " + response);
+                        Toast.makeText(getContext(), "Notification sent successfully", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String errorResponse = new String(error.networkResponse.data, StandardCharsets.UTF_8);
+                        Log.e(TAG, "Error sending notification: " + errorResponse, error);
+                        Toast.makeText(getContext(), "Error sending notification: " + errorResponse, Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "key=" + SERVER_KEY);
+                return headers;
+            }
+        };
+
+        // Add POST request to Volley queue
+        queue.add(request);
+    }
 
 }

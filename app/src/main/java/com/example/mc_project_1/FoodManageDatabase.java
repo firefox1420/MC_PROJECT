@@ -5,9 +5,9 @@ public class FoodManageDatabase {
 //    new UserHelperClass(username, email, phoneNo, amountOfFoodWaste, time, typeOfFoodWaste, reasonForWaste, typeVeg, desc);
 
 
-    String username, email, phoneNo, amountofFoodWaste, time, typeOfFoodWaste, reasonForWaste, typeVeg, desc;
+    String username, email, phoneNo, amountofFoodWaste, time, typeOfFoodWaste, reasonForWaste, typeVeg, desc,food_manage_image;
 
-    public FoodManageDatabase(String username, String email, String phoneNo, String amountofFoodWaste, String time, String typeOfFoodWaste, String reasonForWaste, String typeVeg, String desc) {
+    public FoodManageDatabase(String username, String email, String phoneNo, String amountofFoodWaste, String time, String typeOfFoodWaste, String reasonForWaste, String typeVeg, String desc,String food_manage_image) {
         this.username = username;
         this.email = email;
         this.phoneNo = phoneNo;
@@ -17,8 +17,17 @@ public class FoodManageDatabase {
         this.reasonForWaste = reasonForWaste;
         this.typeVeg = typeVeg;
         this.desc = desc;
+        this.food_manage_image=food_manage_image;
     }
 
+
+    public String getFood_manage_image() {
+        return food_manage_image;
+    }
+
+    public void setFood_manage_image(String food_manage_image) {
+        this.food_manage_image = food_manage_image;
+    }
 
     public FoodManageDatabase() {
     }

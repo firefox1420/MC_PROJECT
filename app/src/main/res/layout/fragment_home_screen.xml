@@ -403,51 +403,70 @@
                 android:background="@drawable/card_background"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="16dp"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/app_logo" />
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/HomeScreenCardView5"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginLeft="5sp"
+                    android:layout_weight="2"
+                    app:cardBackgroundColor="#C51162"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="10dp"
+                    app:cardMaxElevation="12dp"
+                    app:cardPreventCornerOverlap="true"
+                    app:cardUseCompatPadding="true">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/homeScreenOxygen1"
+                        android:layout_width="match_parent"
+                        android:layout_height="131dp"
+                        android:layout_marginLeft="180dp"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/stats"
+                        app:lottie_repeatCount="10" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Statistics"
+                    android:layout_marginLeft="30dp"
                     android:textColor="@color/white"
                     android:textSize="30sp"
                     android:textStyle="bold" />
 
-            </LinearLayout>
+                </androidx.cardview.widget.CardView>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/card_background"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="16dp"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/app_logo" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Calculator"
-                    android:textColor="@color/white"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
 
             </LinearLayout>
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_marginBottom="10dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:background="@drawable/card_background"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="150dp"-->
+<!--                    android:layout_height="150dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_margin="16dp"-->
+<!--                    android:adjustViewBounds="true"-->
+<!--                    android:src="@drawable/app_logo" />-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:text="Calculator"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="30sp"-->
+<!--                    android:textStyle="bold" />-->
+
+<!--            </LinearLayout>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
